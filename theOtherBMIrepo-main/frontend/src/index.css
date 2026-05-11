@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-main: var(--color-bg-main);
+  --color-bg-card: var(--color-bg-card);
+  --color-bg-sidebar: var(--color-bg-sidebar);
+  --color-bg-input: var(--color-bg-input);
+  --color-border-dim: var(--color-border-dim);
+  --color-border-sidebar: var(--color-border-sidebar);
+  --color-text-main: var(--color-text-main);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-dim: var(--color-text-dim);
+  --color-text-header: var(--color-text-header);
+}
+
+:root {
+  --color-brand: #D9FF00;
+  --color-secondary: #A855F7;
+  --color-tertiary: #2DD4BF;
+
+  --color-bg-main: #121212;
+  --color-bg-card: #1a1a1a;
+  --color-bg-sidebar: #111111;
+  --color-bg-input: #0a0a0a;
+  --color-border-dim: #222222;
+  --color-border-sidebar: #1e1e1e;
+  --color-text-main: #f0f0f0;
+  --color-text-muted: #888888;
+  --color-text-dim: #555555;
+  --color-text-header: #ffffff;
+
+  --chart-grid: #1a1a1a;
+  --scrollbar-track: rgba(255, 255, 255, 0.03);
+  --scrollbar-thumb: #444;
+}
+
+.light {
+  --color-bg-main: #f8fafc;
+  --color-bg-card: #ffffff;
+  --color-bg-sidebar: #f1f5f9;
+  --color-bg-input: #f1f5f9;
+  --color-border-dim: #e2e8f0;
+  --color-border-sidebar: #cbd5e1;
+  --color-text-main: #1e293b;
+  --color-text-muted: #64748b;
+  --color-text-dim: #94a3b8;
+  --color-text-header: #0f172a;
+
+  --chart-grid: #e2e8f0;
+  --scrollbar-track: rgba(0, 0, 0, 0.03);
+  --scrollbar-thumb: #cbd5e1;
+}
+
+body {
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+  border: 2px solid var(--color-bg-main);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D9FF00;
+}
+
+/* Base styles */
+.text-brand { color: #D9FF00; }
+.bg-brand { background-color: #D9FF00; }
+.border-brand { border-color: #D9FF00; }
+
+/* Custom components */
+.panel-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-dim);
+  border-radius: 12px;
+}
+
+.metric-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-dim);
+  border-radius: 8px;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.sidebar-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.75rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--color-border-dim);
+  padding-bottom: 12px;
+}
+
+.input-container {
+  background-color: var(--color-bg-input);
+  border: 1px solid var(--color-border-dim);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.input-btn {
+  background-color: transparent;
+  color: var(--color-text-dim);
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-btn:hover {
+  color: #D9FF00;
+  background-color: var(--color-bg-card);
+}
+
+.input-field {
+  background-color: transparent;
+  border: none;
+  color: var(--color-text-main);
+  text-align: center;
+  width: 100%;
+  font-weight: 600;
+  outline: none;
+}
+
+/* Remove arrows from number input */
+.input-field::-webkit-outer-spin-button,
+.input-field::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: 1px solid var(--color-border-dim);
+  background-color: var(--color-bg-input);
+  color: var(--color-text-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.toggle-btn.active {
+  border-color: #D9FF00;
+  color: #D9FF00;
+  background-color: rgba(217, 255, 0, 0.05);
+}
+
+.standard-radio {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-dim);
+  background-color: var(--color-bg-input);
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.standard-radio.active {
+  border-color: #D9FF00;
+  background-color: rgba(217, 255, 0, 0.03);
+}
+
+.standard-radio input {
+  margin-right: 10px;
+  accent-color: #D9FF00;
+}
+
+.category-tag {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.live-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #D9FF00;
+  border-radius: 50%;
+  margin-right: 8px;
+  box-shadow: 0 0 8px #D9FF00;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+  100% { opacity: 1; transform: scale(1); }
+}
