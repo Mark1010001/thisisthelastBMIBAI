@@ -7,10 +7,10 @@ const Dashboard = ({ data, userResults, userMetrics, onLogout, isLightMode, togg
   const { patterns, chart_data } = data;
 
   const CATEGORY_COLORS = {
-    "Underweight": "#378ADD",
-    "Normal": "#D9FF00",
-    "Overweight": "#BA7517",
-    "Obese": "#E24B4A",
+    "Underweight": "var(--color-underweight)",
+    "Normal": "var(--color-normal)",
+    "Overweight": "var(--color-overweight)",
+    "Obese": "var(--color-obese)",
   };
 
   const tabs = [

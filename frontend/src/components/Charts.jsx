@@ -6,10 +6,10 @@ import {
 import { Info } from 'lucide-react';
 
 const CATEGORY_COLORS = {
-  "Underweight": "#378ADD",
-  "Normal": "#d4f01e",
-  "Overweight": "#BA7517",
-  "Obese": "#E24B4A",
+  "Underweight": "var(--color-underweight)",
+  "Normal": "var(--color-normal)",
+  "Overweight": "var(--color-overweight)",
+  "Obese": "var(--color-obese)",
 };
 
 const CustomTooltip = ({ active, payload, label, isLightMode }) => {

@@ -62,7 +62,7 @@ const Login = ({ onLoginSuccess }) => {
 
   return (
     <div className="min-h-screen bg-bg-main flex items-center justify-center p-4 font-inter transition-colors duration-300">
-      <div className="w-full max-w-md bg-bg-card border border-border-dim rounded-2xl p-8 shadow-2xl">
+      <div className="w-full max-w-md bg-bg-card border border-border-dim rounded-2xl p-8 auth-card">
         <div className="flex flex-col items-center mb-8">
           <div className="w-16 h-16 bg-brand rounded-full flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(217,255,0,0.3)]">
             <Shield size={32} strokeWidth={2.5} className="text-black" />

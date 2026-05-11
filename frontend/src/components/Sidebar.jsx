@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Minus, Plus, LayoutGrid } from 'lucide-react';
 
 const CATEGORY_COLORS = {
-  "Underweight": "#378ADD",
-  "Normal":      "#D9FF00",
-  "Overweight":  "#BA7517",
-  "Obese":       "#E24B4A",
+  "Underweight": "var(--color-underweight)",
+  "Normal":      "var(--color-normal)",
+  "Overweight":  "var(--color-overweight)",
+  "Obese":       "var(--color-obese)",
 };
 
 const NumberInput = ({ label, value, onChange, min, max, step = 1, unit = "", decimals = 0 }) => {
@@ -168,15 +168,15 @@ const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, resul
                   <div className="flex-1 text-center">
                     <p className="text-[9px] font-bold text-text-muted uppercase tracking-[0.15em] mb-0.5">Your BMI</p>
                     <p className="text-[24px] font-black text-text-header tracking-tighter leading-none">{results.bmi}</p>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] mt-0.5" style={{ color: CATEGORY_COLORS[results.bmi_category] || '#D9FF00' }}>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] mt-0.5" style={{ color: CATEGORY_COLORS[results.bmi_category] || 'var(--color-brand)' }}>
                       {results.bmi_category}
                     </p>
                   </div>
                   <div className="w-[1px] bg-border-sidebar" />
                   <div className="flex-1 text-center">
                     <p className="text-[9px] font-bold text-text-muted uppercase tracking-[0.15em] mb-0.5">Your BAI</p>
-                    <p className="text-[24px] font-black text-[#8098FF] tracking-tighter leading-none">{results.bai}%</p>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] mt-0.5" style={{ color: results.bai_category === 'Normal' ? '#8098FF' : (CATEGORY_COLORS[results.bai_category] || '#D9FF00') }}>
+                    <p className="text-[24px] font-black text-[var(--color-bai-healthy)] tracking-tighter leading-none">{results.bai}%</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] mt-0.5" style={{ color: results.bai_category === 'Normal' ? 'var(--color-bai-healthy)' : (CATEGORY_COLORS[results.bai_category] || 'var(--color-brand)') }}>
                       {results.bai_category === 'Normal' ? 'Healthy' : results.bai_category}
                     </p>
                   </div>
@@ -206,7 +206,7 @@ const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, resul
                       <div className={`w-[30%] text-[10px] font-black ${activeStandard === s.id ? 'text-brand' : 'text-text-header'}`}>{s.name}</div>
                       <div className="w-[23%] text-[9px] text-text-muted font-bold text-center">{s.over}</div>
                       <div className="w-[18%] text-[9px] text-text-muted font-bold text-center">{s.obese}</div>
-                      <div className="w-[29%] text-[10px] font-black text-right uppercase italic" style={{ color: CATEGORY_COLORS[s.cat] || '#D9FF00' }}>{s.cat}</div>
+                      <div className="w-[29%] text-[10px] font-black text-right uppercase italic" style={{ color: CATEGORY_COLORS[s.cat] || 'var(--color-brand)' }}>{s.cat}</div>
                     </div>
                   ))}
                 </div>
@@ -238,7 +238,7 @@ const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, resul
                       <div className="w-[18%] text-[10px] font-bold text-center text-text-muted">18.5–24.9</div>
                       <div className="w-[18%] text-[10px] font-bold text-center text-text-muted">18.5–22.9</div>
                       <div className="w-[14%] text-[10px] font-bold text-center text-text-muted">{isMatch ? results.bmi : '——'}</div>
-                      <div className="w-[34%] text-[10px] font-black text-right" style={{ color: bmiCat ? (CATEGORY_COLORS[bmiCat] || '#D9FF00') : '#666' }}>
+                      <div className="w-[34%] text-[10px] font-black text-right" style={{ color: bmiCat ? (CATEGORY_COLORS[bmiCat] || 'var(--color-brand)') : '#666' }}>
                         {isMatch ? `${bmiCat} (${riskLevel})` : '——'}
                       </div>
                     </div>
@@ -270,7 +270,7 @@ const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, resul
                       <div className="w-[16%] text-[10px] font-bold text-center text-text-muted">{row.b2}</div>
                       <div className="w-[16%] text-[10px] font-bold text-center text-text-muted">{row.b3}</div>
                       <div className="w-[13%] text-[10px] font-bold text-center text-text-muted">{isMatch ? `${results.bai}%` : '——'}</div>
-                      <div className="w-[26%] text-[10px] font-black text-right" style={{ color: baiCat === 'Normal' ? '#8098FF' : (baiCat ? (CATEGORY_COLORS[baiCat] || '#D9FF00') : '#666') }}>
+                      <div className="w-[26%] text-[10px] font-black text-right" style={{ color: baiCat === 'Normal' ? 'var(--color-bai-healthy)' : (baiCat ? (CATEGORY_COLORS[baiCat] || 'var(--color-brand)') : '#666') }}>
                         {isMatch ? baiDisplay : '——'}
                       </div>
                     </div>
