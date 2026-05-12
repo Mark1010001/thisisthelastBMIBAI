@@ -22,7 +22,7 @@ from config.constants import (
     BAI_CATEGORIES,
     STANDARD_GLOBAL,
 )
-from utils.advice import HEALTH_ADVICE
+from utils.advice import HEALTH_ADVICE, get_dynamic_coach_advice
 from utils.auth import (
     verify_password,
     create_access_token,
@@ -99,6 +99,7 @@ class CalculationResult(BaseModel):
     global_bmi_category: str
     asian_bmi_category: str
     advice: Dict[str, Any]
+    coach_advice: str
     risk_data: Dict[str, Any]
     age_band: str
 
@@ -182,6 +183,10 @@ async def calculate_metrics(metrics: UserMetrics, current_user: User = Depends(g
 
     risk_data = next((v for k, v in RISK_PROBABILITY.items() if k == risk_key), default_risk)
 
+    coach_advice = get_dynamic_coach_advice(
+        metrics.gender, metrics.age, bmi, bai, bmi_cat, bai_cat, metrics.active_standard
+    )
+
     return CalculationResult(
         bmi=bmi,
         bai=bai,
@@ -190,6 +195,7 @@ async def calculate_metrics(metrics: UserMetrics, current_user: User = Depends(g
         global_bmi_category=global_bmi_cat,
         asian_bmi_category=asian_bmi_cat,
         advice=HEALTH_ADVICE[bmi_cat],
+        coach_advice=coach_advice,
         risk_data=risk_data,
         age_band=age_band
     )
