@@ -1,8 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Minus, Plus, LayoutGrid, Sparkles, Send, User, Bot, Loader2 } from 'lucide-react';
-import axios from 'axios';
-
-const API_BASE = 'http://localhost:8000/api';
+import React, { useState } from 'react';
+import { Minus, Plus, LayoutGrid } from 'lucide-react';
 
 const CATEGORY_COLORS = {
   "Underweight": "var(--color-underweight)",
@@ -30,27 +27,6 @@ const NumberInput = ({ label, value, onChange, min, max, step = 1, unit = "", de
 
 const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, results }) => {
   const [activeTab, setActiveTab] = useState('inputs');
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const scrollRef = useRef(null);
-  const lastAdviceRef = useRef(null);
-
-  useEffect(() => {
-    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [messages, isLoading]);
-
-  useEffect(() => {
-    if (results) {
-      if (messages.length === 0) {
-        setMessages([{ role: 'assistant', content: `Hello! I'm your AI Health Coach. Based on your data (BMI: ${results.bmi}, BAI: ${results.bai}%, Age: ${metrics.age}, Gender: ${metrics.gender}), I'm here to help you understand your metrics and provide guidance. How can I help you today?` }]);
-        lastAdviceRef.current = results.coach_advice;
-      } else if (results.coach_advice !== lastAdviceRef.current) {
-        setMessages(prev => [...prev, { role: 'assistant', content: `📊 I've updated my assessment: ${results.coach_advice}` }]);
-        lastAdviceRef.current = results.coach_advice;
-      }
-    }
-  }, [results]);
 
   const handleMetricChange = (name, value) => setMetrics(prev => ({ ...prev, [name]: value }));
 
@@ -84,7 +60,7 @@ const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, resul
       </div>
 
       <div className="flex border-b border-border-sidebar shrink-0">
-        {[{ id: 'inputs', label: 'Inputs' }, { id: 'results', label: 'Results' }, { id: 'coach', label: 'AI Coach' }].map(tab => (
+        {[{ id: 'inputs', label: 'Inputs' }, { id: 'results', label: 'Results' }].map(tab => (
           <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all relative ${activeTab === tab.id ? 'text-text-header' : 'text-text-dim hover:text-text-muted'}`}>
             {tab.label}
             {activeTab === tab.id && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-brand" />}
@@ -110,67 +86,6 @@ const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, resul
             <NumberInput label="Height" unit="CM" value={metrics.height} onChange={(v) => handleMetricChange('height', v)} min={100} max={220} />
             <NumberInput label="Hip" unit="CM" value={metrics.hip_cm} onChange={(v) => handleMetricChange('hip_cm', v)} min={60} max={160} />
           </>
-        )}
-
-        {activeTab === 'coach' && (
-          <div className="flex flex-col h-full -mt-5 -mx-5">
-            {results?.coach_advice && (
-              <div className="mx-5 mt-5 p-3 rounded-xl bg-brand/10 border border-brand/20 shadow-sm">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <div className="p-1 rounded-md bg-brand text-black"><Sparkles size={10} strokeWidth={3} /></div>
-                  <p className="text-[9px] font-black text-text-header uppercase tracking-wider">Live Assessment</p>
-                </div>
-                <p className="text-[11px] leading-relaxed text-text-main font-medium italic">"{results.coach_advice}"</p>
-              </div>
-            )}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-4 custom-scrollbar" style={{ maxHeight: 'calc(100vh - 480px)' }}>
-              {messages.map((msg, idx) => (
-                <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[12px] leading-relaxed shadow-sm ${msg.role === 'user' ? 'bg-brand text-black font-bold rounded-tr-none' : 'bg-bg-card border border-border-dim text-text-main font-medium rounded-tl-none'}`}>
-                    <div className="flex items-center gap-1.5 mb-1 opacity-60">
-                      {msg.role === 'user' ? <User size={10} /> : <Bot size={10} />}
-                      <span className="text-[9px] uppercase tracking-wider font-black">{msg.role === 'user' ? 'You' : 'AI Coach'}</span>
-                    </div>
-                    {msg.content}
-                  </div>
-                </div>
-              ))}
-              {isLoading && (
-                <div className="flex justify-start">
-                  <div className="bg-bg-card border border-border-dim text-text-main rounded-2xl rounded-tl-none px-3.5 py-2.5 shadow-sm"><Loader2 size={14} className="animate-spin text-brand" /></div>
-                </div>
-              )}
-            </div>
-            <div className="p-4 border-t border-border-sidebar bg-bg-sidebar mt-auto">
-              <form onSubmit={async (e) => {
-                e.preventDefault();
-                if (!input.trim() || isLoading) return;
-                const userMsg = input.trim();
-                setInput('');
-                setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
-                setIsLoading(true);
-                try {
-                  const token = localStorage.getItem('token');
-                  const response = await axios.post(`${API_BASE}/chat`, { message: userMsg, metrics, results }, { headers: { Authorization: `Bearer ${token}` } });
-                  setMessages(prev => [...prev, { role: 'assistant', content: response.data.response }]);
-                } catch (err) {
-                  setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, I'm having trouble connecting to my knowledge base right now." }]);
-                } finally {
-                  setIsLoading(false);
-                }
-              }} className="relative">
-                <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask your health coach..." className="w-full bg-bg-input border border-border-dim rounded-xl py-3 pl-4 pr-12 text-[12px] font-medium text-text-main focus:outline-none focus:ring-1 focus:ring-brand/50 transition-all placeholder:text-text-muted" />
-                <button type="submit" disabled={!input.trim() || isLoading} className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-brand text-black rounded-lg disabled:opacity-50 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-brand/20"><Send size={14} strokeWidth={3} /></button>
-              </form>
-              <div className="mt-3 flex items-center justify-between px-1">
-                <div className="flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
-                  <span className="text-[9px] font-bold text-text-dim uppercase tracking-widest">AI Core Online</span>
-                </div>
-                <span className="text-[9px] font-black text-text-muted uppercase tracking-tighter">v2.5 Hybrid Model</span>
-              </div>
-            </div>
-          </div>
         )}
 
         {activeTab === 'results' && (
