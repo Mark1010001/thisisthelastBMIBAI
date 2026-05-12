@@ -23,6 +23,7 @@ from config.constants import (
     STANDARD_GLOBAL,
 )
 from utils.advice import HEALTH_ADVICE, get_dynamic_coach_advice
+from utils.chatbot import get_chatbot_response
 from utils.auth import (
     verify_password,
     create_access_token,
@@ -103,6 +104,14 @@ class CalculationResult(BaseModel):
     risk_data: Dict[str, Any]
     age_band: str
 
+class ChatRequest(BaseModel):
+    message: str
+    metrics: Dict[str, Any]
+    results: Dict[str, Any]
+
+class ChatResponse(BaseModel):
+    response: str
+
 @app.post("/api/auth/signup", response_model=SignupResponse)
 async def signup(user_data: UserSignup):
     if not register_user(user_data.username, user_data.full_name, user_data.password):
@@ -161,6 +170,11 @@ async def get_population_data(current_user: User = Depends(get_current_user)):
         "sample": sample_data,
         "chart_data": chart_data
     }
+
+@app.post("/api/chat", response_model=ChatResponse)
+async def chat_with_coach(chat_req: ChatRequest, current_user: User = Depends(get_current_user)):
+    response_text = get_chatbot_response(chat_req.message, chat_req.metrics, chat_req.results)
+    return ChatResponse(response=response_text)
 
 @app.post("/api/calculate", response_model=CalculationResult)
 async def calculate_metrics(metrics: UserMetrics, current_user: User = Depends(get_current_user)):

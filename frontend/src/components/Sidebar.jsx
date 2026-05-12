@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
-import { Minus, Plus, LayoutGrid, Sparkles } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Minus, Plus, LayoutGrid, Sparkles, Send, User, Bot, Loader2 } from 'lucide-react';
+import axios from 'axios';
+
+const API_BASE = 'http://localhost:8000/api';
 
 const CATEGORY_COLORS = {
   "Underweight": "var(--color-underweight)",
@@ -45,6 +48,38 @@ const NumberInput = ({ label, value, onChange, min, max, step = 1, unit = "", de
 
 const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, results }) => {
   const [activeTab, setActiveTab] = useState('inputs');
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const scrollRef = useRef(null);
+  const lastAdviceRef = useRef(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, isLoading]);
+
+  useEffect(() => {
+    if (results) {
+      if (messages.length === 0) {
+        setMessages([
+          {
+            role: 'assistant',
+            content: `Hello! I'm your AI Health Coach. Based on your data (BMI: ${results.bmi}, BAI: ${results.bai}%, Age: ${metrics.age}, Gender: ${metrics.gender}), I'm here to help you understand your metrics and provide guidance. How can I help you today?`
+          }
+        ]);
+        lastAdviceRef.current = results.coach_advice;
+      } else if (results.coach_advice !== lastAdviceRef.current) {
+        // Automatically post a notification if health advice changes significantly
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: `📊 I've updated my assessment: ${results.coach_advice}`
+        }]);
+        lastAdviceRef.current = results.coach_advice;
+      }
+    }
+  }, [results]);
 
   const handleMetricChange = (name, value) => {
     setMetrics(prev => ({ ...prev, [name]: value }));
@@ -156,46 +191,106 @@ const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, resul
         )}
 
         {activeTab === 'coach' && (
-          <div className="space-y-4">
-            <div className="p-4 rounded-xl bg-gradient-to-br from-brand/20 to-brand/5 border border-brand/20 shadow-sm relative overflow-hidden group">
-              <div className="absolute -right-2 -top-2 text-brand/10 group-hover:text-brand/20 transition-colors">
-                <Sparkles size={64} />
-              </div>
-              <div className="flex items-center gap-2 mb-3 relative">
-                <div className="p-1.5 rounded-lg bg-brand text-black shadow-lg">
-                  <Sparkles size={14} strokeWidth={3} />
+          <div className="flex flex-col h-full -mt-5 -mx-5">
+            {/* Pinned Latest Advice */}
+            {results?.coach_advice && (
+              <div className="mx-5 mt-5 p-3 rounded-xl bg-brand/10 border border-brand/20 shadow-sm relative overflow-hidden group">
+                 <div className="flex items-center gap-2 mb-1.5 relative">
+                  <div className="p-1 rounded-md bg-brand text-black">
+                    <Sparkles size={10} strokeWidth={3} />
+                  </div>
+                  <p className="text-[9px] font-black text-text-header uppercase tracking-wider">Live Assessment</p>
                 </div>
-                <p className="text-[11px] font-black text-text-header uppercase tracking-wider">Smart Health Coach</p>
-                <div className="flex gap-1 ml-auto">
-                  <div className="w-1 h-1 rounded-full bg-brand animate-pulse" />
-                  <div className="w-1 h-1 rounded-full bg-brand animate-pulse delay-75" />
-                  <div className="w-1 h-1 rounded-full bg-brand animate-pulse delay-150" />
+                <p className="text-[11px] leading-relaxed text-text-main font-medium italic">
+                  "{results.coach_advice}"
+                </p>
+              </div>
+            )}
+
+            {/* Chat Messages */}
+            <div
+              ref={scrollRef}
+              className="flex-1 overflow-y-auto p-5 space-y-4 custom-scrollbar"
+              style={{ maxHeight: 'calc(100vh - 480px)' }}
+            >
+              {messages.map((msg, idx) => (
+                <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[12px] leading-relaxed shadow-sm ${
+                    msg.role === 'user'
+                      ? 'bg-brand text-black font-bold rounded-tr-none'
+                      : 'bg-bg-card border border-border-dim text-text-main font-medium rounded-tl-none'
+                  }`}>
+                    <div className="flex items-center gap-1.5 mb-1 opacity-60">
+                      {msg.role === 'user' ? <User size={10} /> : <Bot size={10} />}
+                      <span className="text-[9px] uppercase tracking-wider font-black">
+                        {msg.role === 'user' ? 'You' : 'AI Coach'}
+                      </span>
+                    </div>
+                    {msg.content}
+                  </div>
                 </div>
-              </div>
-              <p className="text-[13px] leading-relaxed text-text-main font-medium italic relative">
-                "{results?.coach_advice || "Adjust your metrics to receive personalized AI-driven coaching advice..."}"
-              </p>
-              <div className="mt-4 pt-3 border-t border-brand/10 flex items-center justify-between relative">
-                <span className="text-[9px] font-bold text-text-dim uppercase tracking-widest">Analysis Engine v2.4</span>
-                <span className="text-[9px] font-black text-brand uppercase tracking-tighter px-2 py-0.5 rounded bg-brand/10">Dynamic Live Advice</span>
-              </div>
+              ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-bg-card border border-border-dim text-text-main rounded-2xl rounded-tl-none px-3.5 py-2.5 shadow-sm">
+                    <Loader2 size={14} className="animate-spin text-brand" />
+                  </div>
+                </div>
+              )}
             </div>
 
-            <div className="p-4 rounded-xl bg-bg-input border border-border-sidebar">
-              <p className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] mb-2">What triggers a refresh?</p>
-              <ul className="space-y-1.5">
-                {[
-                  'BMI/BAI Value Changes',
-                  'Category Threshold Crossings',
-                  'Standard Switching (WHO vs Asian)',
-                  'Age & Gender Adjustments'
-                ].map((item, idx) => (
-                  <li key={idx} className="flex items-center gap-2 text-[10px] text-text-dim">
-                    <div className="w-1 h-1 rounded-full bg-brand" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+            {/* Chat Input */}
+            <div className="p-4 border-t border-border-sidebar bg-bg-sidebar mt-auto">
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!input.trim() || isLoading) return;
+
+                  const userMsg = input.trim();
+                  setInput('');
+                  setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+                  setIsLoading(true);
+
+                  try {
+                    const token = localStorage.getItem('token');
+                    const response = await axios.post(`${API_BASE}/chat`, {
+                      message: userMsg,
+                      metrics: metrics,
+                      results: results
+                    }, {
+                      headers: { Authorization: `Bearer ${token}` }
+                    });
+                    setMessages(prev => [...prev, { role: 'assistant', content: response.data.response }]);
+                  } catch (err) {
+                    setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, I'm having trouble connecting to my knowledge base right now." }]);
+                  } finally {
+                    setIsLoading(false);
+                  }
+                }}
+                className="relative"
+              >
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Ask your health coach..."
+                  className="w-full bg-bg-input border border-border-dim rounded-xl py-3 pl-4 pr-12 text-[12px] font-medium text-text-main focus:outline-none focus:ring-1 focus:ring-brand/50 transition-all placeholder:text-text-muted"
+                />
+                <button
+                  type="submit"
+                  disabled={!input.trim() || isLoading}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-brand text-black rounded-lg disabled:opacity-50 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-brand/20"
+                >
+                  <Send size={14} strokeWidth={3} />
+                </button>
+              </form>
+              <div className="mt-3 flex items-center justify-between px-1">
+                <div className="flex items-center gap-1">
+                  <div className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
+                  <span className="text-[9px] font-bold text-text-dim uppercase tracking-widest">AI Core Online</span>
+                </div>
+                <span className="text-[9px] font-black text-text-muted uppercase tracking-tighter">v2.5 Hybrid Model</span>
+              </div>
             </div>
           </div>
         )}
