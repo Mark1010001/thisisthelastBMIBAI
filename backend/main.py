@@ -145,7 +145,7 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
 
 @app.get("/api/data")
 async def get_population_data(current_user: User = Depends(get_current_user)):
-    raw_df = generate_dataset(50)
+    raw_df = generate_dataset(1000)
     df = transform_dataset(raw_df)
     patterns = mine_patterns(df)
 
