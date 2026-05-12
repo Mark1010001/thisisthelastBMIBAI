@@ -87,7 +87,7 @@ function App() {
   }
 
   return (
-    <div className={`flex h-screen bg-bg-main overflow-hidden font-sans transition-colors duration-300 ${isLightMode ? 'light' : ''}`}>
+    <div className={`flex h-screen bg-bg-main overflow-hidden font-sans transition-colors duration-500 ${isLightMode ? 'light' : ''}`}>
       <Sidebar
         metrics={metrics}
         setMetrics={setMetrics}
