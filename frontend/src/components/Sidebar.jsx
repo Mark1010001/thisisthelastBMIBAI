@@ -88,7 +88,6 @@ const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, resul
           </>
         )}
 
-
         {activeTab === 'results' && (
           <>
             {results && (
