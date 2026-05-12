@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Minus, Plus, LayoutGrid } from 'lucide-react';
+import { Minus, Plus, LayoutGrid, Sparkles } from 'lucide-react';
 
 const CATEGORY_COLORS = {
   "Underweight": "var(--color-underweight)",
@@ -103,6 +103,7 @@ const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, resul
         {[
           { id: 'inputs',  label: 'Inputs' },
           { id: 'results', label: 'Results' },
+          { id: 'coach',   label: 'AI Coach' },
         ].map(tab => (
           <button
             key={tab.id}
@@ -152,6 +153,51 @@ const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, resul
             <NumberInput label="Height" unit="CM" value={metrics.height} onChange={(v) => handleMetricChange('height', v)} min={100} max={220} />
             <NumberInput label="Hip" unit="CM" value={metrics.hip_cm} onChange={(v) => handleMetricChange('hip_cm', v)} min={60} max={160} />
           </>
+        )}
+
+        {activeTab === 'coach' && (
+          <div className="space-y-4">
+            <div className="p-4 rounded-xl bg-gradient-to-br from-brand/20 to-brand/5 border border-brand/20 shadow-sm relative overflow-hidden group">
+              <div className="absolute -right-2 -top-2 text-brand/10 group-hover:text-brand/20 transition-colors">
+                <Sparkles size={64} />
+              </div>
+              <div className="flex items-center gap-2 mb-3 relative">
+                <div className="p-1.5 rounded-lg bg-brand text-black shadow-lg">
+                  <Sparkles size={14} strokeWidth={3} />
+                </div>
+                <p className="text-[11px] font-black text-text-header uppercase tracking-wider">Smart Health Coach</p>
+                <div className="flex gap-1 ml-auto">
+                  <div className="w-1 h-1 rounded-full bg-brand animate-pulse" />
+                  <div className="w-1 h-1 rounded-full bg-brand animate-pulse delay-75" />
+                  <div className="w-1 h-1 rounded-full bg-brand animate-pulse delay-150" />
+                </div>
+              </div>
+              <p className="text-[13px] leading-relaxed text-text-main font-medium italic relative">
+                "{results?.coach_advice || "Adjust your metrics to receive personalized AI-driven coaching advice..."}"
+              </p>
+              <div className="mt-4 pt-3 border-t border-brand/10 flex items-center justify-between relative">
+                <span className="text-[9px] font-bold text-text-dim uppercase tracking-widest">Analysis Engine v2.4</span>
+                <span className="text-[9px] font-black text-brand uppercase tracking-tighter px-2 py-0.5 rounded bg-brand/10">Dynamic Live Advice</span>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-bg-input border border-border-sidebar">
+              <p className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] mb-2">What triggers a refresh?</p>
+              <ul className="space-y-1.5">
+                {[
+                  'BMI/BAI Value Changes',
+                  'Category Threshold Crossings',
+                  'Standard Switching (WHO vs Asian)',
+                  'Age & Gender Adjustments'
+                ].map((item, idx) => (
+                  <li key={idx} className="flex items-center gap-2 text-[10px] text-text-dim">
+                    <div className="w-1 h-1 rounded-full bg-brand" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         )}
 
         {activeTab === 'results' && (
