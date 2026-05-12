@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Shield, UserPlus, LogIn, User } from 'lucide-react';
+import { Shield, UserPlus, LogIn, User, Eye, EyeOff } from 'lucide-react';
 
 const Login = ({ onLoginSuccess }) => {
   const [isSignUp, setIsSignUp] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -108,14 +109,23 @@ const Login = ({ onLoginSuccess }) => {
             <label className="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2 ml-1">
               Password
             </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-bg-input border border-border-dim rounded-lg px-4 py-3 text-text-main text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all"
-              placeholder="Enter your password"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-bg-input border border-border-dim rounded-lg px-4 py-3 pr-10 text-text-main text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all"
+                placeholder="Enter your password"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main transition-colors"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           {error && (
