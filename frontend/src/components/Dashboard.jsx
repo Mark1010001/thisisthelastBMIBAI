@@ -11,6 +11,7 @@ const Dashboard = ({ data, userResults, userMetrics, onLogout, isLightMode, togg
     "Normal": "var(--color-normal)",
     "Overweight": "var(--color-overweight)",
     "Obese": "var(--color-obese)",
+    "Healthy": "var(--color-bai-healthy)",
   };
 
   const tabs = [
@@ -55,9 +56,9 @@ const Dashboard = ({ data, userResults, userMetrics, onLogout, isLightMode, togg
           { label: 'Std Dev', value: patterns.bmi_std },
           { label: 'BMI=BAI Agree', value: `${Math.round(patterns.agreement_count / patterns.total_users * 100)}%`, brand: true },
         ].map((kpi, i) => (
-          <div key={i} className={`metric-card flex flex-col items-center justify-center ${kpi.brand ? 'border-brand/30' : ''} transition-colors duration-300`}>
-            <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-3">{kpi.label}</p>
-            <p className={`text-4xl font-bold tracking-tight ${kpi.brand ? 'text-brand' : 'text-text-header'}`}>{kpi.value}</p>
+          <div key={i} className={`metric-card flex flex-col items-center justify-center border border-border-dim shadow-sm transition-all duration-300 ${kpi.brand ? 'bg-brand border-brand/50 shadow-brand/10' : ''}`}>
+            <p className={`text-[10px] font-bold uppercase tracking-widest mb-3 ${kpi.brand ? 'text-on-brand opacity-70' : 'text-text-muted'}`}>{kpi.label}</p>
+            <p className={`text-4xl font-bold tracking-tight ${kpi.brand ? 'text-on-brand' : 'text-text-header'}`}>{kpi.value}</p>
           </div>
         ))}
       </div>
@@ -109,7 +110,7 @@ const Dashboard = ({ data, userResults, userMetrics, onLogout, isLightMode, togg
             >
               {tab}
               {activeTab === tab && (
-                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-brand shadow-[0_0_8px_rgba(217,255,0,0.5)]"></div>
+                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-tertiary shadow-[0_0_8px_rgba(45,212,191,0.5)]"></div>
               )}
             </button>
           ))}
