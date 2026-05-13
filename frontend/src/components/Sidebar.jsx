@@ -6,6 +6,7 @@ const CATEGORY_COLORS = {
   "Normal":      "var(--color-normal)",
   "Overweight":  "var(--color-overweight)",
   "Obese":       "var(--color-obese)",
+  "Healthy":     "var(--color-bai-healthy)",
 };
 
 const NumberInput = ({ label, value, onChange, min, max, step = 1, unit = "", decimals = 0 }) => {
@@ -15,11 +16,11 @@ const NumberInput = ({ label, value, onChange, min, max, step = 1, unit = "", de
     <div className="mb-5">
       <div className="text-[10px] font-bold text-text-dim uppercase tracking-[0.15em] mb-2">{label}{unit && ` (${unit})`}</div>
       <div className="flex items-center gap-1">
-        <button onClick={decrement} className="w-10 h-10 flex items-center justify-center bg-bg-card text-text-header rounded-md border border-border-dim hover:bg-bg-main active:scale-95 transition-all"><Minus size={13} strokeWidth={3} /></button>
+        <button onClick={decrement} className="w-10 h-10 flex items-center justify-center bg-bg-card text-text-header rounded-md border border-border-dim hover:border-brand/30 active:scale-95 transition-all shadow-sm"><Minus size={13} strokeWidth={3} /></button>
         <div className="flex-1 bg-bg-card border border-border-dim rounded-md h-10 flex items-center justify-center">
           <input type="number" value={decimals > 0 ? value.toFixed(decimals) : value} onChange={(e) => onChange(parseFloat(e.target.value))} className="w-full bg-transparent text-center text-text-main text-[14px] font-bold outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
         </div>
-        <button onClick={increment} className="w-10 h-10 flex items-center justify-center bg-bg-card text-text-header rounded-md border border-border-dim hover:bg-bg-main active:scale-95 transition-all"><Plus size={13} strokeWidth={3} /></button>
+        <button onClick={increment} className="w-10 h-10 flex items-center justify-center bg-bg-card text-text-header rounded-md border border-border-dim hover:border-brand/30 active:scale-95 transition-all shadow-sm"><Plus size={13} strokeWidth={3} /></button>
       </div>
     </div>
   );
@@ -51,7 +52,7 @@ const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, resul
             const active = activeStandard === std.id;
             return (
               <button key={std.id} onClick={() => setActiveStandard(std.id)} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all text-left ${active ? 'border-border-dim bg-bg-card' : 'border-border-sidebar bg-bg-input'}`}>
-                <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${active ? 'border-[#378ADD]' : 'border-text-dim'}`}>{active && <div className="w-2 h-2 rounded-full bg-[#378ADD]" />}</div>
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${active ? 'border-secondary' : 'border-text-dim'}`}>{active && <div className="w-2 h-2 rounded-full bg-secondary" />}</div>
                 <span className={`text-[11px] font-bold tracking-wide ${active ? 'text-text-header' : 'text-text-dim'}`}>{std.label}</span>
               </button>
             );
@@ -77,7 +78,7 @@ const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, resul
               <div className="flex gap-1.5">
                 {['Male', 'Female'].map(g => {
                   const active = metrics.gender === g;
-                  return <button key={g} onClick={() => handleMetricChange('gender', g)} className={`flex-1 py-2.5 rounded-lg border text-[11px] font-black uppercase transition-all flex items-center justify-center gap-1.5 ${active ? 'border-brand bg-brand text-black' : 'border-border-sidebar bg-bg-input text-text-dim'}`}>{g === 'Male' ? '♂ Male' : '♀ Female'}</button>;
+                  return <button key={g} onClick={() => handleMetricChange('gender', g)} className={`flex-1 py-2.5 rounded-lg border text-[11px] font-black uppercase transition-all flex items-center justify-center gap-1.5 ${active ? 'border-brand bg-brand text-on-brand shadow-lg shadow-brand/10' : 'border-border-sidebar bg-bg-input text-text-dim'}`}>{g === 'Male' ? '♂ Male' : '♀ Female'}</button>;
                 })}
               </div>
             </div>
@@ -91,8 +92,8 @@ const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, resul
         {activeTab === 'results' && (
           <>
             {results && (
-              <div className="mb-3 rounded-lg bg-bg-input border border-border-sidebar">
-                <div className="px-3 pt-3 pb-2 border-b border-border-dim"><p className="text-[9px] font-black text-brand uppercase tracking-[0.2em] text-center">Live Calculation Results</p></div>
+              <div className="mb-3 rounded-lg bg-bg-input border border-border-dim shadow-sm">
+                <div className="px-3 pt-3 pb-2 border-b border-border-dim bg-bg-card/50"><p className="text-[9px] font-black text-brand uppercase tracking-[0.2em] text-center">Live Calculation Results</p></div>
                 <div className="flex items-stretch px-3 py-2 gap-2">
                   <div className="flex-1 text-center">
                     <p className="text-[9px] font-bold text-text-muted uppercase tracking-[0.15em] mb-0.5">Your BMI</p>
@@ -109,7 +110,7 @@ const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, resul
               </div>
             )}
             {results && (
-              <div className="mb-3 rounded-xl bg-bg-input border border-border-sidebar p-3">
+              <div className="mb-3 rounded-xl bg-bg-input border border-border-dim shadow-sm p-3">
                 <p className="text-[11px] font-black text-text-header uppercase tracking-wide mb-2 text-center">BMI {results.bmi} — Comparison</p>
                 <div className="flex text-[9px] font-bold text-text-muted uppercase tracking-tighter mb-1 px-1">
                   <div className="w-[30%]">Standard</div><div className="w-[23%] text-center">Overwt</div><div className="w-[18%] text-center">Obese</div><div className="w-[29%] text-right">Category</div>
@@ -129,7 +130,7 @@ const Sidebar = ({ metrics, setMetrics, activeStandard, setActiveStandard, resul
                 </div>
               </div>
             )}
-            <div className="mb-3 rounded-xl bg-bg-input border border-border-sidebar p-3">
+            <div className="mb-3 rounded-xl bg-bg-input border border-border-dim shadow-sm p-3">
               <p className="text-[10px] font-black text-brand uppercase tracking-wide mb-2">Healthy Body Metric Targets</p>
               <div className="mb-3">
                 <div className="flex text-[11px] text-text-muted font-black uppercase tracking-tighter border-b border-border-dim pb-1.5 mb-1.5 leading-tight">

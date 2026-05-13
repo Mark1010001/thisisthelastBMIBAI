@@ -10,18 +10,19 @@ const CATEGORY_COLORS = {
   "Normal": "var(--color-normal)",
   "Overweight": "var(--color-overweight)",
   "Obese": "var(--color-obese)",
+  "Healthy": "var(--color-bai-healthy)",
 };
 
 const CustomTooltip = ({ active, payload, label, isLightMode }) => {
   if (active && payload && payload.length) {
     return (
-      <div className={`${isLightMode ? 'bg-white border-slate-200 shadow-lg' : 'bg-[#111] border-[#222] shadow-2xl'} border p-3 rounded-lg text-[11px]`}>
-        <p className={`font-bold ${isLightMode ? 'text-slate-900' : 'text-white'} mb-2 uppercase tracking-widest`}>{label}</p>
+      <div className="bg-bg-card border border-border-dim shadow-xl p-3 rounded-lg text-[11px]">
+        <p className="font-bold text-text-header mb-2 uppercase tracking-widest">{label}</p>
         {payload.map((p, i) => (
           <div key={i} className="flex items-center gap-2 mb-1">
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }}></div>
-            <p className={`${isLightMode ? 'text-slate-500' : 'text-[#888]'}`}>
-              {p.name}: <span className={`${isLightMode ? 'text-slate-900' : 'text-white'} font-bold`}>{p.value}</span>
+            <p className="text-text-muted">
+              {p.name}: <span className="text-text-main font-bold">{p.value}</span>
             </p>
           </div>
         ))}

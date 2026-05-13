@@ -137,7 +137,7 @@ const Login = ({ onLoginSuccess }) => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-brand hover:bg-[#e6ff33] disabled:bg-[#444] disabled:cursor-not-allowed text-black font-black uppercase tracking-widest py-4 rounded-lg shadow-lg transform transition-all active:scale-[0.98] mt-2 flex items-center justify-center gap-2"
+            className="w-full bg-brand hover:bg-[#e6ff33] disabled:bg-[#444] disabled:cursor-not-allowed text-on-brand font-black uppercase tracking-widest py-4 rounded-lg shadow-lg shadow-brand/20 transform transition-all active:scale-[0.98] mt-2 flex items-center justify-center gap-2"
           >
             {isLoading ? 'Processing...' : (isSignUp ? <><UserPlus size={18} /> Sign Up</> : <><LogIn size={18} /> Sign In</>)}
           </button>
